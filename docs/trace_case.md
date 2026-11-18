@@ -27,7 +27,7 @@ Lệnh in ra ba phần: các event trong trace (`reply`, `decision`, `model_over
 
 | Trường | Nội dung |
 |---|---|
-| Trial | `seeded_regression C-002@11`, run ID `E-seeded_regression-20261118-ab8e` (eval set `ab8ebf0227f5`, item E-002). Cùng lỗi xuất hiện ở baseline `swarm C-002@55` (`E-swarm-20261118-ab8e`). |
+| Trial | `seeded_regression C-002@11`, run ID `E-seeded_regression-20261118-d5c6` (eval set `d5c6d8cc8fbc`, item E-002). Cùng lỗi xuất hiện ở baseline `swarm C-002@55` (`E-swarm-20261118-d5c6`). |
 | Triệu chứng | Grader Lab 8 FAIL (`status resolved != denied`); `refund_amount_correct` FAIL (ledger 20.000đ, nhãn 0); `db_fact_kept` FAIL (1 override event). Reply "Dạ, LogiX đã hoàn 20.000đ cho đơn O-202." **khớp ledger**, nên `reply_matches_ledger` vẫn PASS: reply trôi chảy che một khoản hoàn sai. |
 | Bước sai đầu tiên | Event 3 `model_override` — `{"delay_days": 5}` |
 | Vì sao là bước *đầu tiên* | Event 1 `handoff` đúng hợp đồng (task `check_applicable_policy`, tool chỉ đọc). Event 2 `investigator` đọc đúng đơn O-202 từ DB: `delay_days = 2`, `status = delivered` (chưa đủ điều kiện hoàn). Event 3 là chỗ đầu tiên agent rời khỏi dữ liệu DB: lấy số "trễ 5 ngày" trong ticket đè lên. Event 4 `quote 20.000đ / SHIP-LATE-03` chỉ là hệ quả (tính đúng công thức trên dữ liệu đã sai). Event 5–6 và ledger kéo theo. |

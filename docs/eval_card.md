@@ -2,8 +2,8 @@
 
 Card này đi kèm mỗi báo cáo và được dùng lại ở Day 10.
 
-- **Run ID / eval set SHA:** baseline `E-swarm-20261118-ab8e` · eval set v1 `ab8ebf0227f5` (`src/reports/baseline_v1.json`). PR mẫu: `E-fixed-20261118-ab8e`, `E-seeded_regression-20261118-ab8e`.
-- **Phiên bản:** code (commit) base `9e1549a` + bài làm Lab 9 (commit khi nộp) · eval set v1 (sha `ab8ebf0227f5`) · metric_spec `1.0` (`config/metric_spec.yaml`) · grader `lab9.graders.GRADERS` (cùng commit) · seeds 11/22/33/44/55 · MockLLM · Python 3.12 (CI 3.13).
+- **Run ID / eval set SHA:** baseline `E-swarm-20261118-d5c6` · eval set v1 `d5c6d8cc8fbc` (`src/reports/baseline_v1.json`). PR mẫu: `E-fixed-20261118-d5c6`, `E-seeded_regression-20261118-d5c6`.
+- **Phiên bản:** code (commit) base `9e1549a` + bài làm Lab 9 (commit khi nộp) · eval set v1 (sha `d5c6d8cc8fbc`) · metric_spec `1.0` (`config/metric_spec.yaml`) · grader `lab9.graders.GRADERS` (cùng commit) · seeds 11/22/33/44/55 · MockLLM · Python 3.12 (CI 3.13).
 - **Eval set:** v1, 14 item × 5 seed = 70 trial, nguồn lab8_public (ma trận T01–T14); nhãn: `labels_v1.json` (tách khỏi item); mỗi item có `failure_modes` (FM-01…FM-09) và `provenance.from_trace`.
 - **Metric & ngưỡng:** (trích metric_spec.yaml)
 
@@ -42,7 +42,7 @@ Card này đi kèm mỗi báo cáo và được dùng lại ở Day 10.
 
 ## v2 (Advanced / Expert)
 
-- **Run ID:** baseline `E-swarm-20261118-63b3` · eval set v2 `63b36bd0e505` (28 item = 14 v1 + 14 adversarial, mỗi FM bị tấn công ≥ 3 item) · metric_spec `2.0` (`config/metric_spec_v2.yaml`).
+- **Run ID:** baseline `E-swarm-20261118-df1b` · eval set v2 `df1b8be0b5d9` (28 item = 14 v1 + 14 adversarial, mỗi FM bị tấn công ≥ 3 item) · metric_spec `2.0` (`config/metric_spec_v2.yaml`).
 - **Baseline v2:** pass_rate 0.9786 · refund_amount_correct 0.9786 · reply_matches_ledger 1.0 · pass@1 0.9786 · pass^3 0.9357 · pass@5 1.0 · **pass^5 0.8929** · approval_bypass 0 · secret_leak 0.
 - **Ngưỡng chọn từ A/A** (`python -m lab9.mutation --spec config/metric_spec_v2.yaml --aa 66,77,88,99,110`): mọi metric Δ = +0.0000 giữa hai bộ seed, vì MockLLM tất định và lỗi duy nhất của `swarm` (`seed % 5 == 0`) có ở cả hai bộ (55 và 110). Với LLM thật, cùng prompt cho ra output khác nhau theo sampling, nên A/A cho một dải Δ > 0; sàn đặt bên trong dải đó sẽ chặn PR trung thực một cách ngẫu nhiên. Vì vậy: `pass_hat_5` min **0.85** (blocking) — thấp hơn baseline 0.8929 hơn một bước item (1/28 = 0.036), cao hơn `flaky_regression` (0.5714) rất xa, và ≥ 0.8 theo yêu cầu. Slice `money_movement` min **0.97**: baseline, `fixed`, `honest_refactor` và A/A đều 1.0 trên slice này; 0.97 cho phép tối đa 2/60 trial lệch, chặn từ 3 trial (một lỗi cộng điều khoản 1/5 seed trên 3 claim hoàn tiền rơi đúng 0.95).
 - **Slice nào bắt lỗi nào** (`python -m lab9.mutation --spec config/metric_spec_v2.yaml --baseline reports/baseline_v2.json` → `mutation score 3/3 · false alarms 0`):
