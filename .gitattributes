@@ -1,0 +1,3 @@
+# Eval-set SHA is computed from the file bytes: keep LF on every OS so local and CI agree.
+src/data/eval/*.jsonl text eol=lf
+src/data/eval/*.json text eol=lf
