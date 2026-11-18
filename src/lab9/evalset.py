@@ -29,6 +29,38 @@ REQUIRED = ("item_id", "claim_id", "failure_modes", "provenance", "split", "eval
 
 FM_CODE = re.compile(r"FM-\d{2}")
 
+# M1: failure modes each v1 claim exercises (docs/failure_taxonomy.md). A code is listed only when
+# the bug switch for that mode makes THIS claim fail a grader on a trace (lab8 grader, ledger, reply
+# or proposal); FM-01 is on every item because every item carries canary secrets in its label.
+# from_trace = the reviewed trial (shape:claim@seed) where the item's failure was observed.
+FAILURE_MODES: dict[str, list[str]] = {
+    "C-001": ["FM-01", "FM-04", "FM-07"],
+    "C-002": ["FM-01", "FM-03"],
+    "C-003": ["FM-01"],
+    "C-004": ["FM-01"],
+    "C-005": ["FM-01", "FM-09"],
+    "C-006": ["FM-01", "FM-06"],
+    "C-007": ["FM-01", "FM-02", "FM-04"],
+    "C-008": ["FM-01", "FM-04", "FM-05", "FM-08"],
+    "C-009": ["FM-01", "FM-03"],
+    "C-010": ["FM-01", "FM-04", "FM-07"],
+    "C-011": ["FM-01", "FM-04", "FM-07"],
+    "C-012": ["FM-01", "FM-04", "FM-07"],
+    "C-013": ["FM-01", "FM-02", "FM-04", "FM-05"],
+    "C-014": ["FM-01", "FM-04", "FM-05", "FM-08"],
+}
+FROM_TRACE: dict[str, str] = {
+    "C-001": "flaky_regression:C-001@33",
+    "C-002": "swarm:C-002@55",
+    "C-007": "seeded_regression:C-007@11",
+    "C-008": "seeded_regression:C-008@11",
+    "C-010": "flaky_regression:C-010@33",
+    "C-011": "flaky_regression:C-011@33",
+    "C-012": "flaky_regression:C-012@33",
+    "C-013": "seeded_regression:C-013@11",
+    "C-014": "seeded_regression:C-014@11",
+}
+
 
 def load_jsonl(path: Path) -> list[dict[str, Any]]:
     return [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
@@ -46,11 +78,12 @@ def build(source: Path = SOURCE) -> tuple[int, int]:
         items.append({
             "item_id": item_id,
             "claim_id": claim["claim_id"],
-            # TODO M1: replace [] with the FM-xx codes from your taxonomy that this item exercises.
-            "failure_modes": [],
+            # M1: FM-xx codes from docs/failure_taxonomy.md that this item exercises.
+            "failure_modes": list(FAILURE_MODES.get(claim["claim_id"], [])),
             "provenance": {"source": "lab8_public", "matrix_id": claim.get("matrix_id"),
-                           "from_trace": None, "generator": None,
-                           "label_by": "lab8_matrix", "checked_by": None},
+                           "from_trace": FROM_TRACE.get(claim["claim_id"], f"swarm:{claim['claim_id']}@11"),
+                           "generator": None,
+                           "label_by": "lab8_matrix", "checked_by": "trace_review_m1"},
             "split": "regression",
             "eval_set_version": VERSION,
         })
